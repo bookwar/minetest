@@ -4,7 +4,7 @@
 
 Name:		minetest
 Version:	0.2.20110922_2
-Release:	1.git%{gitcommit}%{?dist}.R
+Release:	2.git%{gitcommit}%{?dist}.R
 Summary:	An InfiniMiner/Minecraft inspired game
 
 Group:		Amusements/Games
@@ -13,6 +13,7 @@ URL:		http://celeron.55.lt/minetest/
 
 #		wget https://github.com/celeron55/minetest/tarball/960009d
 Source0:	https://github.com/celeron55/minetest/tarball/%{gitcommit}
+Source1:	%{name}.desktop
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	cmake >= 2.6.0
@@ -34,17 +35,50 @@ make %{?_smp_mflags}
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
+# Put icon in the new fdo location
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps
+cp %{name}-icon.svg $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps
+# Add desktop file
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
+cp %{SOURCE1} $RPM_BUILD_ROOT%{_datadir}/applications
+ 
+
 %find_lang %{name}
+
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
+%post
+touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
+update-desktop-database -q
+
+%postun
+if [ $1 -eq 0 ] ; then
+    touch --no-create %{_datadir}/icons/hicolor &>/dev/null
+    gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+fi
+
+%posttrans
+gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+
 
 %files -f %{name}.lang
 %{_bindir}/%{name}
 %{_bindir}/%{name}server
 %{_datadir}/%{name}/*.png
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/icons/hicolor/scalable/apps/%{name}-icon.svg
 %{_docdir}/%{name}/*
+
 
 %doc doc/README.txt doc/changelog.txt minetest.conf.example
 
 
 %changelog
+* Fri Sep 30 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.2.20110922_2-2.git960009d%{?dist}.R
+- Desktop file and icon
+
 * Fri Sep 30 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.2.20110922_2-1.git960009d%{?dist}.R
 - Basic build of the current stable version.
