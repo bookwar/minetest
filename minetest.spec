@@ -1,17 +1,17 @@
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
-%global gitcommit 960009d
+%global gitcommit 0bf533f
 %global gitname celeron55
 
 Name:		minetest
-Version:	0.2.20110922_2
-Release:	2.git%{gitcommit}%{?dist}.R
+Version:	0.3.20111016
+Release:	1.git%{gitcommit}%{?dist}.R
 Summary:	An InfiniMiner/Minecraft inspired game
 
 Group:		Amusements/Games
 License:	GPLv2+
 URL:		http://celeron.55.lt/minetest/		
 
-#		wget https://github.com/celeron55/minetest/tarball/960009d
+#		wget https://github.com/celeron55/minetest/tarball/0bf533f
 #		wget https://raw.github.com/RussianFedora/minetest/master/minetest.desktop
 Source0:	https://github.com/celeron55/minetest/tarball/%{gitcommit}
 Source1:	%{name}.desktop
@@ -79,6 +79,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Sun Oct 16 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.20111016-1.git0bf533f.R
+- Update to current dev version.
+
 * Fri Sep 30 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.2.20110922_2-2.git960009d
 - Desktop file and icon
 
