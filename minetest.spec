@@ -5,7 +5,7 @@
 
 Name:		minetest
 Version:	0.3.1
-Release:	2.git%{gitcommit}%{?dist}.R
+Release:	3.git%{gitcommit}%{?dist}.R
 Summary:	Multiplayer infinite-world block sandbox with survival mode
 
 Group:		Amusements/Games
@@ -15,12 +15,16 @@ URL:		http://celeron.55.lt/minetest/
 #		wget https://raw.github.com/RussianFedora/minetest/master/minetest.desktop
 Source0:	https://github.com/celeron55/minetest/tarball/%{gitcommit}
 Source1:	%{name}.desktop
+Source2:	%{name}.service
+Source3:	%{name}.rsyslog
+Source4:	%{name}.logrotate
 
 BuildRequires:	cmake >= 2.6.0
 BuildRequires:	irrlicht-devel
 BuildRequires:	bzip2-devel gettext-devel jthread-devel sqlite-devel
 BuildRequires:	libpng-devel libjpeg-turbo-devel libXxf86vm mesa-libGL-devel
 BuildRequires:	desktop-file-utils
+BuildRequires:	systemd-units
 
 Requires:	minetest-server = %{version}-%{release}
 Requires:	hicolor-icon-theme
@@ -33,6 +37,12 @@ network multiplayer mode. There are no in-game sounds yet
 %package	server
 Summary:	Minetest multiplayer server
 Group:		Amusements/Games
+
+Requires(pre):		shadow-utils
+Requires(post):		systemd-units
+Requires(preun):	systemd-units
+Requires(postun):	systemd-units
+
 
 %description	server
 Minetest multiplayer server. This package does not require X Window System
@@ -56,11 +66,30 @@ cp -p %{name}-icon.svg $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps
 # Add desktop file
 desktop-file-install --dir=${RPM_BUILD_ROOT}%{_datadir}/applications %{SOURCE1}
 
+# Systemd unit file
+mkdir -p $RPM_BUILD_ROOT%{_unitdir}
+cp -p %{SOURCE2} $RPM_BUILD_ROOT%{_unitdir}
+
+# /etc/rsyslog.d/minetest.conf
+mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/rsyslog.d
+cp -p %{SOURCE3} $RPM_BUILD_ROOT/%{_sysconfdir}/rsyslog.d/%{name}.conf
+
+# /etc/logrotate.d/minetest
+mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
+cp -p %{SOURCE4} $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d/%{name}
+
+# /var/lib/minetest directory for server data files
+mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/%{name} 
+
+# /etc/minetest.conf
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}
+cp -p minetest.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
+
 # Move doc directory back to the sources
 mkdir __doc
 mv  $RPM_BUILD_ROOT%{_datadir}/doc/%{name}/* __doc
 rm -rf $RPM_BUILD_ROOT%{_datadir}/doc/%{name}
- 
+
 %find_lang %{name}
 
 %clean
@@ -78,6 +107,33 @@ fi
 %posttrans
 /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
+%pre server
+getent group %{name} >/dev/null || groupadd -r %{name}
+getent passwd %{name} >/dev/null || \
+    useradd -r -g %{name} -d /var/lib/%{name} -s /sbin/nologin \
+    -c "Minetest multiplayer server" %{name}
+exit 0
+
+%post server
+if [ $1 -eq 1 ] ; then 
+    # Initial installation 
+    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
+fi
+
+%preun server
+if [ $1 -eq 0 ] ; then
+    # Package removal, not upgrade
+    /bin/systemctl --no-reload disable %{name}.service > /dev/null 2>&1 || :
+    /bin/systemctl stop %{name}.service > /dev/null 2>&1 || :
+fi
+
+%postun server
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+if [ $1 -ge 1 ] ; then
+    # Package upgrade, not uninstall
+    /bin/systemctl try-restart %{name}.service >/dev/null 2>&1 || :
+fi
+
 %files -f %{name}.lang
 %defattr(-,root,root,-)
 %{_bindir}/%{name}
@@ -87,10 +143,17 @@ fi
 
 %files server
 %{_bindir}/%{name}server
+%{_unitdir}/%{name}.service
+%config(noreplace) %{_sysconfdir}/%{name}.conf
+%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
+%config(noreplace) %{_sysconfdir}/rsyslog.d/%{name}.conf
+%attr(0755,minetest,minetest) %dir %{_sharedstatedir}/%{name}
 
 %doc README.txt doc/changelog.txt doc/gpl-2.0.txt doc/mapformat.txt doc/protocol.txt
 
 %changelog
+* Sat Nov 13 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-3.gitbc0e5c0.R
+- Systemd unit file, rsyslog, user/group and other server-related fixes
 
 * Sat Nov 12 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-2.gitbc0e5c0.R
 - Fixed doc directories

@@ -1,0 +1,6 @@
+# Log minetest generated log messages to file
+:programname, isequal, "minetestserver"	/var/log/minetest.log
+     
+# comment out the following line to allow minetest messages through.
+# Doing so means you'll also get minetest messages in /var/log/messages
+& ~

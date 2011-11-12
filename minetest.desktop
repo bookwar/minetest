@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Minetest
 GenericName=Minetest
-Comment=An InfiniMiner/Minecraft inspired game
+Comment=Multiplayer infinite-world block sandbox
 Exec=minetest
 Icon=minetest-icon
 Terminal=false

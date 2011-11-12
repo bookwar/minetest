@@ -1,0 +1,5 @@
+/var/log/minetest.log {
+    copytruncate
+    notifempty
+    missingok
+}
