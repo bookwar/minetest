@@ -5,7 +5,7 @@
 
 Name:		minetest
 Version:	0.3.1
-Release:	3.git%{gitcommit}%{?dist}.R
+Release:	3.git%{gitcommit}%{?dist}
 Summary:	Multiplayer infinite-world block sandbox with survival mode
 
 Group:		Amusements/Games
@@ -13,10 +13,10 @@ License:	GPLv2+
 URL:		http://celeron.55.lt/minetest/		
 
 # wget https://github.com/celeron55/minetest/tarball/bc0e5c0
-# wget https://raw.github.com/RussianFedora/minetest/master/minetest.desktop
-# wget https://raw.github.com/RussianFedora/minetest/master/minetest.service
-# wget https://raw.github.com/RussianFedora/minetest/master/minetest.rsyslog
-# wget https://raw.github.com/RussianFedora/minetest/master/minetest.logrotate
+# wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.desktop
+# wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.service
+# wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.rsyslog
+# wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.logrotate
 Source0:	https://github.com/celeron55/minetest/tarball/%{gitcommit}
 Source1:	%{name}.desktop
 Source2:	%{name}.service
@@ -30,12 +30,12 @@ BuildRequires:	libpng-devel libjpeg-turbo-devel libXxf86vm mesa-libGL-devel
 BuildRequires:	desktop-file-utils
 BuildRequires:	systemd-units
 
-Requires:	minetest-server = %{version}-%{release}
+Requires:	%{name}-server = %{version}-%{release}
 Requires:	hicolor-icon-theme
 
 %description 
 Game of mining, crafting and building in the infinite world of cubic
-blocks with optional hostile creatures. Features both single and the
+blocks with optional hostile creatures, features both single and the
 network multiplayer mode. There are no in-game sounds yet
 
 %package	server
@@ -156,8 +156,9 @@ fi
 %doc README.txt doc/changelog.txt doc/gpl-2.0.txt doc/mapformat.txt doc/protocol.txt
 
 %changelog
-* Sat Nov 13 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-3.gitbc0e5c0.R
+* Sat Nov 13 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-3.gitbc0e5c0
 - Systemd unit file, rsyslog, user/group and other server-related fixes
+- Fixed Release tag for Fedora review
 
 * Sat Nov 12 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-2.gitbc0e5c0.R
 - Fixed doc directories
