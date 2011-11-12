@@ -4,7 +4,7 @@
 
 Name:		minetest
 Version:	0.3.1
-Release:	1.git%{gitcommit}%{?dist}.R
+Release:	2.git%{gitcommit}%{?dist}.R
 Summary:	An InfiniMiner/Minecraft inspired game
 
 Group:		Amusements/Games
@@ -44,13 +44,17 @@ cp %{name}-icon.svg $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/scalable/apps
 
 # Add desktop file
 desktop-file-install --dir=${RPM_BUILD_ROOT}%{_datadir}/applications %{SOURCE1}
+
+#Move doc directory back to the sources
+
+mkdir __doc
+mv  $RPM_BUILD_ROOT%{_datadir}/doc/%{name}/* __doc
+rm -rf $RPM_BUILD_ROOT%{_datadir}/doc/%{name}
  
 %find_lang %{name}
 
-
 %clean
 rm -rf $RPM_BUILD_ROOT
-
 
 %post
 touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -72,21 +76,21 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/scalable/apps/%{name}-icon.svg
-%{_docdir}/%{name}
 
-
-%doc doc/changelog.txt  doc/gpl-2.0.txt  doc/mapformat.txt  doc/protocol.txt
-
+%doc README.txt doc/changelog.txt  doc/gpl-2.0.txt  doc/mapformat.txt  doc/protocol.txt
 
 %changelog
+* Sat Nov 12 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-2.gitbc0e5c0.R
+- Fixed doc directories
+
 * Wed Nov  9 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-1.gitbc0e5c0.R
-- Update to stable 0.3.1 version.
+- Update to stable 0.3.1 version
 
 * Thu Nov  3 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.0-1.gitf65d157.R
-- Update to stable 0.3.0 version.
+- Update to stable 0.3.0 version
 
 * Fri Sep 30 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.2.20110922_2-2.git960009d
-- Desktop file and icon.
+- Desktop file and icon
 
 * Fri Sep 30 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.2.20110922_2-1.git960009d
-- Basic build of the current stable version.
+- Basic build of the current stable version
