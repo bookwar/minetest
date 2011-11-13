@@ -11,8 +11,12 @@ Summary:	Multiplayer infinite-world block sandbox with survival mode
 Group:		Amusements/Games
 License:	GPLv2+
 URL:		http://celeron.55.lt/minetest/		
-#		wget https://github.com/celeron55/minetest/tarball/bc0e5c0
-#		wget https://raw.github.com/RussianFedora/minetest/master/minetest.desktop
+
+# wget https://github.com/celeron55/minetest/tarball/bc0e5c0
+# wget https://raw.github.com/RussianFedora/minetest/master/minetest.desktop
+# wget https://raw.github.com/RussianFedora/minetest/master/minetest.service
+# wget https://raw.github.com/RussianFedora/minetest/master/minetest.rsyslog
+# wget https://raw.github.com/RussianFedora/minetest/master/minetest.logrotate
 Source0:	https://github.com/celeron55/minetest/tarball/%{gitcommit}
 Source1:	%{name}.desktop
 Source2:	%{name}.service
