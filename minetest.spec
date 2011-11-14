@@ -5,7 +5,7 @@
 
 Name:		minetest
 Version:	0.3.1
-Release:	3.git%{gitcommit}%{?dist}
+Release:	4.git%{gitcommit}%{?dist}
 Summary:	Multiplayer infinite-world block sandbox with survival mode
 
 Group:		Amusements/Games
@@ -96,9 +96,6 @@ rm -rf $RPM_BUILD_ROOT%{_datadir}/doc/%{name}
 
 %find_lang %{name}
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %post
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
 
@@ -139,7 +136,6 @@ if [ $1 -ge 1 ] ; then
 fi
 
 %files -f %{name}.lang
-%defattr(-,root,root,-)
 %{_bindir}/%{name}
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
@@ -156,6 +152,9 @@ fi
 %doc README.txt doc/changelog.txt doc/gpl-2.0.txt doc/mapformat.txt doc/protocol.txt
 
 %changelog
+* Mon Nov 14 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-4.gitbc0e5c0
+- Removed clean section and defattr according to guidelines
+
 * Sat Nov 13 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-3.gitbc0e5c0
 - Systemd unit file, rsyslog, user/group and other server-related fixes
 - Fixed Release tag for Fedora review
