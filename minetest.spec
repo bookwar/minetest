@@ -1,27 +1,28 @@
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
-
 %global gitcommit bc0e5c0
 %global gitname celeron55
 
 Name:		minetest
 Version:	0.3.1
-Release:	4.git%{gitcommit}%{?dist}
+Release:	5%{?dist}
 Summary:	Multiplayer infinite-world block sandbox with survival mode
 
 Group:		Amusements/Games
 License:	GPLv2+
 URL:		http://celeron.55.lt/minetest/		
 
-# wget https://github.com/celeron55/minetest/tarball/bc0e5c0
+# curl -L -O http://github.com/celeron55/minetest/tarball/0.3.1/minetest-0.3.1.tar.gz
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.desktop
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.service
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.rsyslog
 # wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.logrotate
-Source0:	https://github.com/celeron55/minetest/tarball/%{gitcommit}
+# wget https://raw.github.com/RussianFedora/minetest/fedora/minetest.README
+
+Source0:	http://github.com/%{gitname}/%{name}/tarball/%{version}/%{name}-%{version}.tar.gz
 Source1:	%{name}.desktop
 Source2:	%{name}.service
 Source3:	%{name}.rsyslog
 Source4:	%{name}.logrotate
+Source5:	%{name}.README
 
 BuildRequires:	cmake >= 2.6.0
 BuildRequires:	irrlicht-devel
@@ -80,7 +81,7 @@ cp -p %{SOURCE3} $RPM_BUILD_ROOT/%{_sysconfdir}/rsyslog.d/%{name}.conf
 
 # /etc/logrotate.d/minetest
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d
-cp -p %{SOURCE4} $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d/%{name}
+cp -p %{SOURCE4} $RPM_BUILD_ROOT/%{_sysconfdir}/logrotate.d/%{name}-server
 
 # /var/lib/minetest directory for server data files
 mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/%{name} 
@@ -88,6 +89,8 @@ mkdir -p $RPM_BUILD_ROOT%{_sharedstatedir}/%{name}
 # /etc/minetest.conf
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}
 cp -p minetest.conf.example $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
+
+cp -p %{SOURCE5} README.fedora
 
 # Move doc directory back to the sources
 mkdir __doc
@@ -149,9 +152,12 @@ fi
 %config(noreplace) %{_sysconfdir}/rsyslog.d/%{name}.conf
 %attr(0755,minetest,minetest) %dir %{_sharedstatedir}/%{name}
 
-%doc README.txt doc/changelog.txt doc/gpl-2.0.txt doc/mapformat.txt doc/protocol.txt
+%doc README.txt doc/changelog.txt doc/gpl-2.0.txt doc/mapformat.txt doc/protocol.txt README.fedora
 
 %changelog
+* Mon Dec  5 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-5
+- Changed tarball and logrotate names, removed git commit, new README file.
+
 * Mon Nov 14 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-4.gitbc0e5c0
 - Removed clean section and defattr according to guidelines
 
