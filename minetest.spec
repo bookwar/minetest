@@ -3,7 +3,7 @@
 
 Name:		minetest
 Version:	0.3.1
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	Multiplayer infinite-world block sandbox with survival mode
 
 Group:		Amusements/Games
@@ -139,12 +139,14 @@ if [ $1 -ge 1 ] ; then
 fi
 
 %files -f %{name}.lang
+%doc doc/changelog.txt doc/gpl-2.0.txt README.fedora
 %{_bindir}/%{name}
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/scalable/apps/%{name}-icon.svg
 
 %files server
+%doc README.txt doc/changelog.txt doc/gpl-2.0.txt doc/mapformat.txt doc/protocol.txt README.fedora
 %{_bindir}/%{name}server
 %{_unitdir}/%{name}.service
 %config(noreplace) %{_sysconfdir}/%{name}.conf
@@ -152,9 +154,11 @@ fi
 %config(noreplace) %{_sysconfdir}/rsyslog.d/%{name}.conf
 %attr(0755,minetest,minetest) %dir %{_sharedstatedir}/%{name}
 
-%doc README.txt doc/changelog.txt doc/gpl-2.0.txt doc/mapformat.txt doc/protocol.txt README.fedora
 
 %changelog
+* Thu Dec  8 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-6
+- Fixed docs for minetest package
+
 * Mon Dec  5 2011 Aleksandra Bookwar <alpha@bookwar.info> - 0.3.1-5
 - Changed tarball and logrotate names, removed git commit, new README file.
 
